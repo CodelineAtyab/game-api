@@ -1,50 +1,45 @@
 package com.techytribe.gameapi;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api/v1/player")
 @CrossOrigin("*")
 public class PlayerController {
-
-    CopyOnWriteArrayList<Player> listOfPlayers = new CopyOnWriteArrayList<>();
-    static String resVal;
+    @Autowired
+    public PlayerRepository playerRepository;
 
     @PostMapping
     public Player createPlayer(@RequestBody Player incomingPlayer){
-        listOfPlayers.add(incomingPlayer);
+        playerRepository.save(incomingPlayer);
         return incomingPlayer;
     }
 
     @GetMapping
     public List<Player> getAllPlayers() {
-        return listOfPlayers;
+        return playerRepository.findAll();
     }
 
     @GetMapping(path = "/{id}")
-    public Player getSpecificPlayer(@PathVariable String id) {
-        Player existingPLayer = listOfPlayers.stream().filter(
-                                    (currPlayer) -> {
-                                        return currPlayer.id.equals(id);
-                                    }
-                                ).findFirst().get();
-
-        return existingPLayer;
+    public Optional<Player> getSpecificPlayer(@PathVariable String id) {
+        return playerRepository.findById(id);
     }
 
     @PutMapping(path = "/{id}")
     public Player updateSpecificPlayer(@PathVariable String id, @RequestBody Player incomingPlayer) {
-        Player existingPlayer = getSpecificPlayer(id);
+        Player existingPlayer = getSpecificPlayer(id).get();
         existingPlayer.name = incomingPlayer.name;
+        playerRepository.save(existingPlayer);
         return existingPlayer;
     }
     @DeleteMapping(path = "/{id}")
     public Player removePlayer(@PathVariable String id) {
-        Player existingPlayer = getSpecificPlayer(id);
-        listOfPlayers.remove(existingPlayer);
+        Player existingPlayer = getSpecificPlayer(id).get();
+        playerRepository.delete(existingPlayer);
         return existingPlayer;
     }
 }
