@@ -1,4 +1,8 @@
-fetch("http://localhost:8080/api/v1/player")
+let hostname = window.location.hostname;
+let port = 8080;
+let url = "http://" + hostname + ":" + port + "/api/v1/player"
+
+fetch(url)
     .then((response) => { return response.json() })
     .then((parsedResponse) => {
         console.log(parsedResponse);
@@ -37,7 +41,7 @@ playerRegForm.addEventListener("submit", (event) => {
         redirect: 'follow'
     };
 
-    fetch("http://localhost:8080/api/v1/player", requestOptions)
+    fetch(url, requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
@@ -69,7 +73,7 @@ playerUpForm.addEventListener("submit", (event) => {
         redirect: 'follow'
     };
 
-    fetch("http://localhost:8080/api/v1/player/" + playerId, requestOptions)
+    fetch(url + playerId, requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
@@ -101,7 +105,7 @@ playerDelForm.addEventListener("submit", (event) => {
         redirect: 'follow'
     };
 
-    fetch("http://localhost:8080/api/v1/player/" + playerId, requestOptions)
+    fetch(url + playerId, requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
